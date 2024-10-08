@@ -1,0 +1,31 @@
+{
+	"schemaVersion": 1,
+	"id": "jailmod",
+	"version": "1.5",
+	"name": "Jail Mod",
+	"description": "Jail Mod",
+	"authors": [
+		"n3mmos"
+	],
+	"contact": {
+		"homepage": "https://cubolico.com",
+		"sources": "https://github.com/nemmusu/jail-mod-fabric/"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/jailmod/icon.png",
+	"environment": "*",
+	"entrypoints": {
+    "main": [
+        "com.example.jailmod.JailMod"
+    ]
+},
+	"depends": {
+        "fabricloader": ">=0.16.2",
+        "minecraft": ">=1.21",  
+        "java": ">=21",
+        "fabric-api": "*"
+    },
+	"suggests": {
+		"another-mod": "*"
+	}
+}
