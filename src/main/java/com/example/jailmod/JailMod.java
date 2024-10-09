@@ -133,9 +133,9 @@ public class JailMod implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             // Command /jail
             dispatcher.register(CommandManager.literal("jail")
-                .requires(source -> source.hasPermissionLevel(2)) // Only admins
-                // Command /jail imprison <player> <time> <reason>
+                // Subcommand /jail imprison <player> <time> <reason> (Admin only)
                 .then(CommandManager.literal("imprison")
+                    .requires(source -> source.hasPermissionLevel(2)) // Only admins
                     .then(CommandManager.argument("player", StringArgumentType.word())
                         .then(CommandManager.argument("time", IntegerArgumentType.integer(1))
                             .then(CommandManager.argument("reason", StringArgumentType.greedyString())
@@ -144,7 +144,7 @@ public class JailMod implements ModInitializer {
                                     int timeInSeconds = IntegerArgumentType.getInteger(context, "time");
                                     String reason = StringArgumentType.getString(context, "reason");
                                     ServerPlayerEntity player = context.getSource().getServer().getPlayerManager().getPlayer(playerName);
-
+        
                                     if (player != null) {
                                         jailPlayer(player, timeInSeconds, reason);
                                         context.getSource().sendFeedback(() -> Text.of("Player " + playerName + " jailed for " + timeInSeconds + " seconds."), true);
@@ -157,8 +157,9 @@ public class JailMod implements ModInitializer {
                         )
                     )
                 )
-                // Command /jail reload
+                // Subcommand /jail reload (Admin only)
                 .then(CommandManager.literal("reload")
+                    .requires(source -> source.hasPermissionLevel(2)) // Only admins
                     .executes(context -> {
                         loadConfig(); // Reload the config
                         loadLanguage(); // Reload language strings
@@ -166,8 +167,9 @@ public class JailMod implements ModInitializer {
                         return 1;
                     })
                 )
-                // Command /jail set x y z
+                // Subcommand /jail set x y z (Admin only)
                 .then(CommandManager.literal("set")
+                    .requires(source -> source.hasPermissionLevel(2)) // Only admins
                     .then(CommandManager.argument("x", IntegerArgumentType.integer())
                         .then(CommandManager.argument("y", IntegerArgumentType.integer())
                             .then(CommandManager.argument("z", IntegerArgumentType.integer())
@@ -175,11 +177,11 @@ public class JailMod implements ModInitializer {
                                     int x = IntegerArgumentType.getInteger(context, "x");
                                     int y = IntegerArgumentType.getInteger(context, "y");
                                     int z = IntegerArgumentType.getInteger(context, "z");
-
+        
                                     // Update jail position in the config
                                     config.jail_position = new Config.Position(x, y, z);
                                     saveConfig();
-
+        
                                     // Send feedback to the player
                                     context.getSource().sendFeedback(() -> Text.of("Jail position set to (" + x + ", " + y + ", " + z + ")"), true);
                                     return 1;
@@ -188,7 +190,7 @@ public class JailMod implements ModInitializer {
                         )
                     )
                 )
-                // Command /jail info
+                // Subcommand /jail info (Accessible to everyone)
                 .then(CommandManager.literal("info")
                     .executes(context -> {
                         ServerPlayerEntity player = context.getSource().getPlayer();
@@ -210,7 +212,7 @@ public class JailMod implements ModInitializer {
                 )
             );
         
-            // Command /unjail
+            // Command /unjail (Admin only)
             dispatcher.register(CommandManager.literal("unjail")
                 .requires(source -> source.hasPermissionLevel(2)) // Only admins
                 .then(CommandManager.argument("player", StringArgumentType.word())
@@ -467,11 +469,11 @@ public class JailMod implements ModInitializer {
         languageStrings.put("bucket_use_denied", "You cannot use lava or water buckets while in jail!");
         languageStrings.put("item_use_denied", "You cannot use items while in jail!");
         languageStrings.put("block_break_denied", "You cannot break blocks while in jail!");
-    
+
         // New strings for /jail info command
         languageStrings.put("jail_info_message", "You are in jail for another {time} seconds. Reason: {reason}.");
         languageStrings.put("not_in_jail_message", "You are not in jail!");
-    
+
         saveLanguage();
     }
 
